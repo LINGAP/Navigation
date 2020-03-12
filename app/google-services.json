@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "270440185301",
+    "firebase_url": "https://androidnavi-f2ce2.firebaseio.com",
+    "project_id": "androidnavi-f2ce2",
+    "storage_bucket": "androidnavi-f2ce2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:270440185301:android:303d331bbe5a799148515c",
+        "android_client_info": {
+          "package_name": "com.Ling.Navi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "270440185301-g5el579dv11hgod64t745elt835m31pq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.Ling.Navi",
+            "certificate_hash": "ecc625e9461e071756764bcfd6fd48ccd85df1be"
+          }
+        },
+        {
+          "client_id": "270440185301-fcutn85oo6p34682usjcpl83escb201a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDJwUaMbKbDdDW7RXghUrM0WTgYBxmW5hs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "270440185301-fcutn85oo6p34682usjcpl83escb201a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
