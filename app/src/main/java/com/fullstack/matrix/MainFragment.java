@@ -9,9 +9,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -82,8 +88,33 @@ public class MainFragment extends Fragment  implements OnMapReadyCallback {
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        MapsInitializer.initialize(getContext());
+        double latitude = 30.592995;
+        double longitude = 114.305390;
 
+        // Create marker on google map
+        MarkerOptions marker = new MarkerOptions().position(
+                new LatLng(latitude, longitude)).title("天佑武汉！");
+
+
+        // Change marker Icon on google map
+        marker.icon(BitmapDescriptorFactory
+                .defaultMarker(BitmapDescriptorFactory.HUE_ROSE));
+
+        // Add marker to google map
+        googleMap.addMarker(marker);
+
+
+        // Set up camera configuration, set camera to lat and lng, and set Zoom to 12
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(new LatLng(latitude, longitude)).zoom(12).build();
+
+        // Animate the zoom process
+        googleMap.animateCamera(CameraUpdateFactory
+                .newCameraPosition(cameraPosition));
     }
 
-
 }
+
+
+
