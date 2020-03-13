@@ -42,8 +42,8 @@ public class LoginFragment extends OnBoardingBaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // test database connection
-        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("message");
-        myRef.setValue("Hello, World!");
+//        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("message");
+//        myRef.setValue("Hello, World!");
 
         // Inflate the layout for this fragment
         View view = super.onCreateView(inflater, container, savedInstanceState);
