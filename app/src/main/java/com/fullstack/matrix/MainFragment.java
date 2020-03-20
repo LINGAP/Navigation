@@ -1,10 +1,14 @@
 package com.fullstack.matrix;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +29,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+import static android.app.Activity.RESULT_OK;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -38,6 +49,8 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Report
     private ReportDialog dialog;
     private FloatingActionButton fabFocus;
     private DatabaseReference database;
+
+    private static final int REQUEST_CAPTURE_IMAGE = 100;
 
 
 
@@ -228,8 +241,51 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Report
 
     @Override
     public void startCamera() {
-
+        Intent pictureIntent = new Intent(
+                MediaStore.ACTION_IMAGE_CAPTURE
+        );
+        startActivityForResult(pictureIntent, REQUEST_CAPTURE_IMAGE);
     }
+
+
+    //Store the image into local disk
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_CAPTURE_IMAGE: {
+                if (resultCode == RESULT_OK && data != null && data.getExtras() != null) {
+                    Bitmap imageBitmap = (Bitmap) data.getExtras().get("data");
+                    if (dialog != null && dialog.isShowing()) {
+                        dialog.updateImage(imageBitmap);
+                    }
+                    //Compress the image, this is optional
+                    ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                    imageBitmap.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
+
+
+                    File destination = new File(Environment.getExternalStorageDirectory(), "temp.png");
+                    if (!destination.exists()) {
+                        try {
+                            destination.createNewFile();
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                    FileOutputStream fo;
+                    try {
+                        fo = new FileOutputStream(destination);
+                        fo.write(bytes.toByteArray());
+                        fo.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                break;
+            }
+            default:
+        }
+    }
+
 }
 
 
