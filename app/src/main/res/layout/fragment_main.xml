@@ -29,7 +29,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_margin="24dp"
                 android:src="@drawable/plus"
-                android:tint="#fff" />
+               />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fab_focus"
