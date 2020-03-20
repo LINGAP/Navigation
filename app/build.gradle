@@ -50,4 +50,6 @@ dependencies {
     //authentication
     implementation 'com.google.firebase:firebase-auth:19.3.0'
 
+    implementation 'com.google.firebase:firebase-storage:19.1.1'
+
 }

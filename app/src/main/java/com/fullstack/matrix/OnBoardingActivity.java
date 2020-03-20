@@ -70,4 +70,21 @@ public class OnBoardingActivity extends AppCompatActivity {
         viewpager.setCurrentItem(page);
     }
 
+    //Add authentification listener when activity starts
+    @Override
+    public void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
+    }
+
+    //Remove authentification listener when activity ends
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
+    }
+
+
 }
