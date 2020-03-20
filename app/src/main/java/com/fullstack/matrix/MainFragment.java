@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -29,14 +30,17 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -51,7 +55,7 @@ import static android.app.Activity.RESULT_OK;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MainFragment extends Fragment implements OnMapReadyCallback, ReportDialog.DialogCallBack {
+public class MainFragment extends Fragment implements OnMapReadyCallback, ReportDialog.DialogCallBack,GoogleMap.OnMarkerClickListener {
 
     private MapView mapView;
     private View view;
@@ -235,6 +239,7 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Report
         // adding marker
         googleMap.addMarker(marker);
 
+        loadEventInVisibleMap();
 
 //        double latitude = 30.592995;
 //        double longitude = 114.305390;
@@ -318,6 +323,7 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Report
     private void uploadImage(final String key) {
         if (destination == null || !destination.exists()) {
             dialog.dismiss();
+            loadEventInVisibleMap();
             return;
         }
 
@@ -341,6 +347,7 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Report
                         setValue(downloadUri.toString());
                 destination.delete();
                 dialog.dismiss();
+                loadEventInVisibleMap();
             }
         });
     }
@@ -360,8 +367,56 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Report
         }
     }
 
+    //get center coordinate
+    private void loadEventInVisibleMap() {
+        database.child("events").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot noteDataSnapshot : dataSnapshot.getChildren()) {
+                    TrafficEvent event = noteDataSnapshot.getValue(TrafficEvent.class);
+                    double eventLatitude = event.getEvent_latitude();
+                    double eventLongitude = event.getEvent_longitude();
+
+                    locationTracker.getLocation();
+                    double centerLatitude = locationTracker.getLatitude();
+                    double centerLongitude = locationTracker.getLongitude();
 
 
+                    int distance = Utils.distanceBetweenTwoLocations(centerLatitude, centerLongitude,
+                            eventLatitude, eventLongitude);
+
+                    if (distance < 20) {
+                        LatLng latLng = new LatLng(eventLatitude, eventLongitude);
+                        MarkerOptions marker = new MarkerOptions().position(latLng);
+
+                        // Changing marker icon
+                        String type = event.getEvent_type();
+                        Bitmap icon = BitmapFactory.decodeResource(getContext().getResources(),
+                                Config.trafficMap.get(type));
+
+                        Bitmap resizeBitmap = Utils.getResizedBitmap(icon, 130, 130);
+
+                        marker.icon(BitmapDescriptorFactory.fromBitmap(resizeBitmap));
+
+                        // adding marker
+                        Marker mker = googleMap.addMarker(marker);
+                        mker.setTag(event);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                //TODO: do something
+            }
+        });
+    }
+
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        return false;
+    }
 }
 
 
