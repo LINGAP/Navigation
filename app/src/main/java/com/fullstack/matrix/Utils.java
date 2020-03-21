@@ -1,11 +1,17 @@
 package com.fullstack.matrix;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.location.Location;
+import android.util.Log;
 
 import org.apache.commons.codec.binary.Hex;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.util.concurrent.TimeUnit;
@@ -105,6 +111,33 @@ public class Utils {
             return days + " days ago";
         }
     }
+
+    /**
+     * Download an Image from the given URL, then decodes and returns a Bitmap object.
+     * @param imageUrl the url fetching from the remote
+     * @return the bitmap object
+     */
+    //super slow on IO
+    public static Bitmap getBitmapFromURL(String imageUrl) {
+        Bitmap bitmap = null;
+
+        if (bitmap == null) {
+            try {
+                URL url = new URL(imageUrl);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setDoInput(true);
+                connection.connect();
+                InputStream input = connection.getInputStream();
+                bitmap = BitmapFactory.decodeStream(input);
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.e("Error: ", e.getMessage().toString());
+            }
+        }
+
+        return bitmap;
+    }
+
 
 
 }
