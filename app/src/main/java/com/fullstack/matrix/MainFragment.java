@@ -452,9 +452,8 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Report
         mEventTextLike.setText(String.valueOf(likeNumber));
         mEventTextType.setText(type);
         final String url = mEvent.getImgUri();
-        if (url == null) {
-            mEventImageType.setImageDrawable(ContextCompat.getDrawable(getContext(), Config.trafficMap.get(type)));
-        } else {
+        mEventImageType.setImageDrawable(ContextCompat.getDrawable(getContext(), Config.trafficMap.get(type)));
+        if (url != null) {
             new AsyncTask<Void, Void, Bitmap>() {
                 @Override
                 protected Bitmap doInBackground(Void... voids) {
