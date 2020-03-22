@@ -2,6 +2,7 @@ package com.fullstack.matrix;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -18,6 +19,7 @@ import androidx.fragment.app.Fragment;
 
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.speech.RecognizerIntent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,8 +56,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Locale;
 
 import static android.app.Activity.RESULT_OK;
+import static com.fullstack.matrix.Config.listItems;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -95,6 +100,10 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Report
     private TextView mEventTextLocation;
     private TextView mEventTextTime;
     private TrafficEvent mEvent;
+
+    //simple voice
+    private static final int REQ_CODE_SPEECH_INPUT = 101;
+    private FloatingActionButton speakNow;
 
 
 
@@ -146,6 +155,15 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Report
             }
         });
 
+        speakNow = view.findViewById(R.id.voice);
+        speakNow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                askSpeechInput("Hi speak something");
+            }
+        });
+
+
         if (mapView != null) {
             mapView.onCreate(null);
             mapView.onResume();// needed to get the map to display immediately
@@ -163,6 +181,22 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Report
 
 
     }
+
+    private void askSpeechInput(String string) {
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+        intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 2000);
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT,
+                string);
+        try {
+            startActivityForResult(intent, REQ_CODE_SPEECH_INPUT);
+        } catch (ActivityNotFoundException a) {
+
+        }
+    }
+
 
     private String uploadEvent(String user_id, String editString, String event_type) {
         TrafficEvent event = new TrafficEvent();
@@ -225,6 +259,7 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Report
     private void showDialog(String label, String prefillText) {
         dialog = new ReportDialog(getContext());
         dialog.setDialogCallBack(this);
+        dialog.setVocieInfor(label, prefillText);
         dialog.show();
     }
 
@@ -336,6 +371,31 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Report
                 }
                 break;
             }
+
+            case REQ_CODE_SPEECH_INPUT: {
+                if (resultCode == RESULT_OK && null != data) {
+
+                    ArrayList<String> result = data
+                            .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                    if (result.size() > 0) {
+                        final String sentence = result.get(0);
+                        boolean isMatch = false;
+                        for (int i = 0; i < listItems.size(); i++) {
+                            final String label = listItems.get(i).getDrawable_label();
+                            if (sentence.toLowerCase().contains(label.toLowerCase())) {
+                                Toast.makeText(getContext(), sentence, Toast.LENGTH_LONG).show();
+                                isMatch = true;
+                                break;
+                            }
+                        }
+                        if (!isMatch) {
+                            askSpeechInput("Try again");
+                        }
+                    }
+                }
+                break;
+            }
+
             default:
         }
     }

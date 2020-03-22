@@ -41,6 +41,9 @@ public class ReportDialog extends Dialog {
 
     private DialogCallBack mDialogCallBack;
 
+    //voice
+    private String mPrefillText;
+
 
 
 
@@ -147,6 +150,22 @@ public class ReportDialog extends Dialog {
         mImageCamera.setImageBitmap(bitmap);
     }
 
+    public void setVocieInfor(String event_type, String prefillText) {
+        mEventype = event_type;
+        mPrefillText = prefillText;
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (mEventype != null) {
+            showNextViewSwitcher(mEventype);
+        }
+        if (mPrefillText != null) {
+            mCommentEditText.setText(mPrefillText);
+        }
+    }
 
 
 

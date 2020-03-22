@@ -52,4 +52,9 @@ dependencies {
 
     implementation 'com.google.firebase:firebase-storage:19.1.1'
 
+    //FCM
+    implementation 'com.google.firebase:firebase-messaging:20.1.3'
+
+    implementation 'com.google.firebase:firebase-ads:19.0.0'
+
 }
