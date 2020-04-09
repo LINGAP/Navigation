@@ -17,6 +17,7 @@
         android:id="@+id/event_type"
         android:text="test"
         ></TextView>
+
     <ImageView
         android:id="@+id/event_type_img"
         android:layout_width="130dp"

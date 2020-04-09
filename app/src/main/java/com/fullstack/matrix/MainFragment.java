@@ -256,6 +256,7 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Report
         mapView.onLowMemory();
     }
 
+
     private void showDialog(String label, String prefillText) {
         dialog = new ReportDialog(getContext());
         dialog.setDialogCallBack(this);
@@ -383,7 +384,8 @@ public class MainFragment extends Fragment implements OnMapReadyCallback, Report
                         for (int i = 0; i < listItems.size(); i++) {
                             final String label = listItems.get(i).getDrawable_label();
                             if (sentence.toLowerCase().contains(label.toLowerCase())) {
-                                Toast.makeText(getContext(), sentence, Toast.LENGTH_LONG).show();
+                                showDialog(label, sentence);
+                                //Toast.makeText(getContext(), sentence, Toast.LENGTH_LONG).show();
                                 isMatch = true;
                                 break;
                             }

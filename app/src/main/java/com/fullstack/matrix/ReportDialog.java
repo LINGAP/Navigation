@@ -24,8 +24,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class ReportDialog extends Dialog {
 
-    private int cx;
-    private int cy;
     private RecyclerView mRecyclerView;
     private ReportRecyclerViewAdapter mRecyclerViewAdapter;
     private ViewSwitcher mViewSwitcher;

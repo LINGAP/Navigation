@@ -8,15 +8,15 @@
     android:background="@color/colorDark">
 
     <TextView
-        android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:gravity="center"
+        android:layout_height="wrap_content"
         android:fontFamily="Roboto"
-        android:textSize="25sp"
-        android:textColor="#FFFFFF"
+        android:gravity="center"
         android:paddingTop="25dp"
         android:paddingBottom="25dp"
-        android:text="Report"/>
+        android:text="Report"
+        android:textColor="#FFFFFF"
+        android:textSize="25sp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
